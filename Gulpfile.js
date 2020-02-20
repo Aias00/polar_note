@@ -19,7 +19,7 @@ var messagesPath = leanoteBase + 'messages';
 
 // 合并Js, 这些js都是不怎么修改, 且是依赖
 // 840kb, 非常耗时!!
-gulp.task('concatDepJs', function() {
+gulp.task('concatDepJs', function () {
     var jss = [
         'js/jquery-1.9.0.min.js',
         'js/jquery.ztree.all-3.5-min.js',
@@ -31,7 +31,7 @@ gulp.task('concatDepJs', function() {
         'js/object_id.js',
     ];
 
-    for(var i in jss) {
+    for (var i in jss) {
         jss[i] = base + '/' + jss[i];
     }
 
@@ -43,7 +43,7 @@ gulp.task('concatDepJs', function() {
 });
 
 // 合并app js 这些js会经常变化 90kb
-gulp.task('concatAppJs', function() {
+gulp.task('concatAppJs', function () {
     var jss = [
         'js/common.js',
         'js/app/note.js',
@@ -53,7 +53,7 @@ gulp.task('concatAppJs', function() {
         'js/app/share.js',
     ];
 
-    for(var i in jss) {
+    for (var i in jss) {
         jss[i] = base + '/' + jss[i];
     }
 
@@ -65,14 +65,14 @@ gulp.task('concatAppJs', function() {
 });
 
 // plugins压缩
-gulp.task('plugins', function() {
+gulp.task('plugins', function () {
     // gulp.src(base + '/js/plugins/libs/*.js')
     //     .pipe(uglify()) // 压缩
     //     // .pipe(concat('main.min.js'))
     //     .pipe(gulp.dest(base + '/js/plugins/libs-min'));
 
     // 所有js合并成一个
-     var jss = [
+    var jss = [
         'note_info',
         'tips',
         'history',
@@ -81,7 +81,7 @@ gulp.task('plugins', function() {
         'main'
     ];
 
-    for(var i in jss) {
+    for (var i in jss) {
         jss[i] = base + '/js/plugins/' + jss[i] + '.js';
     }
     jss.push(base + '/js/plugins/libs-min/fileupload.js');
@@ -93,13 +93,13 @@ gulp.task('plugins', function() {
 });
 
 // 合并requirejs和markdown为一个文件
-gulp.task('concatMarkdownJs', function() {
+gulp.task('concatMarkdownJs', function () {
     var jss = [
         'js/require.js',
         'md/main.min.js',
     ];
 
-    for(var i in jss) {
+    for (var i in jss) {
         jss[i] = base + '/' + jss[i];
     }
 
@@ -111,13 +111,13 @@ gulp.task('concatMarkdownJs', function() {
 });
 
 // / 合并requirejs和markdown为一个文件
-gulp.task('concatMarkdownJsV2', function() {
+gulp.task('concatMarkdownJsV2', function () {
     var jss = [
         'js/require.js',
         'md/main-v2.min.js',
     ];
 
-    for(var i in jss) {
+    for (var i in jss) {
         jss[i] = base + '/' + jss[i];
     }
 
@@ -130,7 +130,7 @@ gulp.task('concatMarkdownJsV2', function() {
 
 // note-dev.html -> note.html, 替换css, js
 // TODO 加?t=2323232, 强制浏览器更新, 一般只需要把app.min.js上加
-gulp.task('devToProHtml', function() {
+gulp.task('devToProHtml', function () {
     return gulp
         .src(noteDev)
         .pipe(replace(/<!-- dev -->[.\s\S]+?<!-- \/dev -->/g, '')) // 把dev 去掉
@@ -157,40 +157,41 @@ gulp.task('devToProHtml', function() {
 
 // 只获取需要js i18n的key
 var path = require('path');
-gulp.task('i18n', function() {
+gulp.task('i18n', function () {
     var keys = {};
     var reg = /getMsg\(["']+(.+?)["']+/g;
     // {rule: "required", msg: "inputNewPassword"},
     var reg2 = /msg: ?"?([0-9a-zA-Z]*)"?/g;
+
     function getKey(data) {
-        while(ret = reg.exec(data)) {
+        while (ret = reg.exec(data)) {
             keys[ret[1]] = 1;
         }
 
-        while(ret2 = reg2.exec(data)) {
+        while (ret2 = reg2.exec(data)) {
             keys[ret2[1]] = 1;
         }
     }
+
     // 先获取需要的key
-    function ls(ff) { 
-        var files = fs.readdirSync(ff);  
-        for(fn in files) {  
-            var fname = ff + path.sep + files[fn];  
-            var stat = fs.lstatSync(fname);  
-            if(stat.isDirectory() == true) {
+    function ls(ff) {
+        var files = fs.readdirSync(ff);
+        for (fn in files) {
+            var fname = ff + path.sep + files[fn];
+            var stat = fs.lstatSync(fname);
+            if (stat.isDirectory() === true) {
                 ls(fname);
-            } 
-            else {
+            } else {
                 if ((fname.indexOf('.html') > 0 || fname.indexOf('.js') > 0)) {
                     // console.log(fname);
                     // if (fname.indexOf('min.js') < 0) {
-                        var data = fs.readFileSync(fname, "utf-8");
-                        // 得到getMsg里的key
-                        getKey(data);
+                    var data = fs.readFileSync(fname, "utf-8");
+                    // 得到getMsg里的key
+                    getKey(data);
                     // }
                 }
-            }  
-        }  
+            }
+        }
     }
 
     console.log('parsing used keys');
@@ -218,15 +219,15 @@ gulp.task('i18n', function() {
         for (var i = 0; i < lines.length; ++i) {
             var line = lines[i];
             // 忽略注释
-            if (line[0] == '#' || line[1] == '#') {
+            if (line[0] === '#' || line[1] === '#') {
                 continue;
             }
             var lineArr = line.split('=');
             if (lineArr.length >= 2) {
-               var key = lineArr[0];
-               lineArr.shift();
-               msg[key] = lineArr.join('=');
-               // msg[lineArr[0]] = lineArr[1];
+                var key = lineArr[0];
+                lineArr.shift();
+                msg[key] = lineArr.join('=');
+                // msg[lineArr[0]] = lineArr[1];
             }
         }
         return msg;
@@ -236,9 +237,9 @@ gulp.task('i18n', function() {
     // 返回{en-us: 1, }
     function getAllLangs() {
         var langs = {};
-        var files = fs.readdirSync(messagesPath);  
-        for(fn in files) {
-            var fname = files[fn]; 
+        var files = fs.readdirSync(messagesPath);
+        for (fn in files) {
+            var fname = files[fn];
             if (fname.indexOf('-') > 0) {
                 langs[fname] = 1;
             }
@@ -264,25 +265,29 @@ gulp.task('i18n', function() {
             }
         }
         var str = 'var MSG=' + JSON.stringify(toMsgs) + ';';
-        str += 'function getMsg(key, data) {var msg = MSG[key];if(msg) {if(data) {if(!isArray(data)) {data = [data];}' + 
-                        'for(var i = 0; i < data.length; ++i) {' + 
-                            'msg = msg.replace("%s", data[i]);' + 
-                        '}' + 
-                    '}' + 
-                    'return msg;' + 
-                '}' + 
-                'return key;' + 
+        str += 'function getMsg(key, data) {var msg = MSG[key];if(msg) {if(data) {if(!isArray(data)) {data = [data];}' +
+            'for(var i = 0; i < data.length; ++i) {' +
+            'msg = msg.replace("%s", data[i]);' +
+            '}' +
+            '}' +
+            'return msg;' +
+            '}' +
+            'return key;' +
             '}';
 
         // 写入到文件中
         var toFilename = targetFilename + '.' + lang + '.js';
-        fs.writeFile(base + '/js/i18n/' + toFilename, str);
+        fs.writeFile(base + '/js/i18n/' + toFilename, str, function (err) {
+            if (err) throw err;
+        });
     }
 
     function genTinymceLang(lang) {
         var msgs = getAllMsgs(leanoteBase + 'messages/' + lang + '/tinymce_editor.conf');
         var str = 'tinymce.addI18n("' + lang + '",' + JSON.stringify(msgs) + ');';
-        fs.writeFile(base + '/tinymce/langs/' + lang + '.js', str);
+        fs.writeFile(base + '/tinymce/langs/' + lang + '.js', str, function (err) {
+            if (err) throw err;
+        });
     }
 
     var langs = getAllLangs();
@@ -292,11 +297,11 @@ gulp.task('i18n', function() {
 
         genTinymceLang(lang);
     }
-    
+
 });
 
 // 合并album需要的js
-gulp.task('concatAlbumJs', function() {
+gulp.task('concatAlbumJs', function () {
     /*
     gulp.src(base + '/album/js/main.js')
         .pipe(uglify()) // 压缩
@@ -317,7 +322,7 @@ gulp.task('concatAlbumJs', function() {
         'album/js/main.js',
     ];
 
-    for(var i in jss) {
+    for (var i in jss) {
         jss[i] = base + '/' + jss[i];
     }
 
@@ -331,7 +336,7 @@ gulp.task('concatAlbumJs', function() {
 // tinymce
 // please set the right path on your own env
 var tinymceBase = '/Users/life/leanote/leanote-tools/tinymce_4.1.9_leanote_public';
-gulp.task('tinymce', function() {
+gulp.task('tinymce', function () {
     // 先清理
     fs.unlink(tinymceBase + '/js/tinymce/tinymce.dev.js');
     fs.unlink(tinymceBase + '/js/tinymce/tinymce.jquery.dev.js');
@@ -342,12 +347,12 @@ gulp.task('tinymce', function() {
 
     var bundleCmd = 'grunt bundle --themes leanote --plugins autolink,link,leaui_image,leaui_mindmap,lists,hr,paste,searchreplace,leanote_nav,leanote_code,tabfocus,table,directionality,textcolor';
     // build
-    cp.exec('grunt minify', {cwd: tinymceBase}, function(err, stdout, stderr) {
+    cp.exec('grunt minify', {cwd: tinymceBase}, function (err, stdout, stderr) {
         console.log('stdout: ' + stdout);
         console.log('stderr: ' + stderr);
 
         // 将所有都合并成一起
-        cp.exec(bundleCmd, {cwd: tinymceBase}, function(err, stdout, stderr) {
+        cp.exec(bundleCmd, {cwd: tinymceBase}, function (err, stdout, stderr) {
             console.log('stdout: ' + stdout);
             console.log('stderr: ' + stderr);
         });
@@ -356,7 +361,7 @@ gulp.task('tinymce', function() {
 
 // 合并css, 无用
 // Deprecated
-gulp.task('concatCss', function() {
+gulp.task('concatCss', function () {
     return gulp
         .src([markdownRaw + '/css/default.css', markdownRaw + '/css/md.css'])
         .pipe(concat('all.css'))
@@ -365,7 +370,7 @@ gulp.task('concatCss', function() {
 
 // mincss
 var minifycss = require('gulp-minify-css');
-gulp.task('minifycss', function() {
+gulp.task('minifycss', function () {
     gulp.src(base + '/css/bootstrap.css')
         .pipe(rename({suffix: '-min'}))
         .pipe(minifycss())
